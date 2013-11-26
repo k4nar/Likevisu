@@ -9,6 +9,9 @@
 module.exports = (grunt) ->
   require("load-grunt-tasks") grunt
   require("time-grunt") grunt
+
+  grunt.loadNpmTasks 'grunt-contrib-haml'
+
   grunt.initConfig
     yeoman:
 
@@ -56,6 +59,10 @@ module.exports = (grunt) ->
 
       gruntfile:
         files: ["Gruntfile.js"]
+
+      haml:
+        files: ['<%= yeoman.app %>/{,*//*}*.haml']
+        tasks: ['haml:dist']
 
     autoprefixer:
       options: ["last 1 version"]
@@ -115,6 +122,21 @@ module.exports = (grunt) ->
         options:
           debugInfo: true
 
+    haml:
+      options:
+          doubleQuoteAttributes: true
+          escapeHtml: true
+          unixNewlines: true
+
+      dist:
+          files: [
+              expand: true
+              cwd: '<%= yeoman.app %>'
+              src: '{,*/}*.haml'
+              dest: '.tmp'
+              ext: '.html'
+          ]
+
 
     # not used since Uglify task does concat,
     # but still available if needed
@@ -127,7 +149,7 @@ module.exports = (grunt) ->
           src: ["<%= yeoman.dist %>/scripts/{,*/}*.js", "<%= yeoman.dist %>/styles/{,*/}*.css", "<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}", "<%= yeoman.dist %>/styles/fonts/*"]
 
     useminPrepare:
-      html: "<%= yeoman.app %>/index.html"
+      html: ".tmp/index.html"
       options:
         dest: "<%= yeoman.dist %>"
 
@@ -183,7 +205,7 @@ module.exports = (grunt) ->
         #          removeOptionalTags: true
         files: [
           expand: true
-          cwd: "<%= yeoman.app %>"
+          cwd: ".tmp"
           src: ["*.html", "views/*.html"]
           dest: "<%= yeoman.dist %>"
         ]
@@ -224,8 +246,8 @@ module.exports = (grunt) ->
         src: "{,*/}*.css"
 
     concurrent:
-      server: ["coffee:dist", "compass:server", "copy:styles"]
-      dist: ["coffee", "compass:dist", "copy:styles", "imagemin", "svgmin", "htmlmin"]
+      server: ["haml:dist", "coffee:dist", "compass:server", "copy:styles"]
+      dist: ["haml:dist", "coffee", "compass:dist", "copy:styles", "imagemin", "svgmin", "htmlmin"]
 
     cdnify:
       dist:
@@ -252,6 +274,6 @@ module.exports = (grunt) ->
     return grunt.task.run(["build", "express:prod", "open", "express-keepalive"])  if target is "dist"
     grunt.task.run ["clean:server", "concurrent:server", "autoprefixer", "express:dev", "open", "watch"]
 
-  grunt.registerTask "build", ["clean:dist", "useminPrepare", "concurrent:dist", "autoprefixer", "concat", "ngmin", "copy:dist", "cdnify", "cssmin", "uglify", "rev", "usemin"]
+  grunt.registerTask "build", ["clean:dist", "haml:dist", "useminPrepare", "concurrent:dist", "autoprefixer", "concat", "ngmin", "copy:dist", "cdnify", "cssmin", "uglify", "rev", "usemin"]
   grunt.registerTask "heroku", ["build", "clean:heroku", "copy:heroku"]
   grunt.registerTask "default", ["server"]
