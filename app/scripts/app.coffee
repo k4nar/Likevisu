@@ -4,7 +4,8 @@ angular.module('likevisuApp', [
   'ngCookies',
   'ngResource',
   'ngSanitize',
-  'ngRoute'
+  'ngRoute',
+  'CornerCouch'
 ])
   .config ($routeProvider) ->
     $routeProvider

@@ -44,8 +44,11 @@
     %script{src: "bower_components/angular-cookies/angular-cookies.js"}
     %script{src: "bower_components/angular-sanitize/angular-sanitize.js"}
     %script{src: "bower_components/angular-route/angular-route.js"}
+    %script{src: "bower_components/CornerCouch/angular-cornercouch.js"}
     / endbuild
     / build:js({.tmp,app}) scripts/scripts.js
     %script{src: "scripts/app.js"}
     %script{src: "scripts/controllers/main.js"}
     / endbuild
+
+    %script{src: "//localhost:35729/livereload.js"}
