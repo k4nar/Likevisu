@@ -3,9 +3,6 @@ express = require("express")
 path = require("path")
 app = express()
 
-# Controllers
-api = require("./lib/controllers/api")
-
 # Express Configuration
 app.configure ->
   app.use express.logger("dev")
@@ -22,10 +19,6 @@ app.configure "development", ->
 app.configure "production", ->
   app.use express.favicon(path.join(__dirname, "public/favicon.ico"))
   app.use express.static(path.join(__dirname, "public"))
-
-
-# Routes
-app.get "/api/awesomeThings", api.awesomeThings
 
 # Start server
 port = process.env.PORT or 3000
