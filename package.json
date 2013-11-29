@@ -2,7 +2,8 @@
   "name": "likevisu",
   "version": "0.0.0",
   "dependencies": {
-    "express": "~3.4.3"
+    "express": "~3.4.3",
+    "cradle": "~0.6.6"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
