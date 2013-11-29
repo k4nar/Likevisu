@@ -5,7 +5,6 @@ angular.module('likevisuApp', [
   'ngResource',
   'ngSanitize',
   'ngRoute',
-  'CornerCouch',
   'nvd3ChartDirectives'
 ])
   .config ($routeProvider) ->

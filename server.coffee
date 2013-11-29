@@ -2,7 +2,6 @@
 express = require("express")
 fs = require("fs")
 path = require("path")
-cradle = require("cradle")
 app = express()
 
 # Express Configuration
@@ -21,14 +20,6 @@ app.configure "development", ->
 app.configure "production", ->
   app.use express.favicon(path.join(__dirname, "public/favicon.ico"))
   app.use express.static(path.join(__dirname, "public"))
-
-db = new(cradle.Connection)().database('commits')
-
-fs.readdir './lib/designs', (err, files) ->
-  for file in files
-    file = file.slice 0, -7 # strip the .coffee
-    views = require('./lib/designs/' + file).views
-    db.save('_design/' + file, views)
 
 # Start server
 port = process.env.PORT or 3000
