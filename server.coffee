@@ -25,32 +25,33 @@ app.configure "production", ->
   app.use express.favicon(path.join(__dirname, "public/favicon.ico"))
   app.use express.static(path.join(__dirname, "public"))
 
-git.Repo.open "/home/yannick/linux/.git", (error, repo) ->
-  repo.getMaster (error, branch) ->
-    walker = repo.createRevWalk()
+if process.env.PROCESS_COMMITS
+  git.Repo.open "/home/yannick/linux/.git", (error, repo) ->
+    repo.getMaster (error, branch) ->
+      walker = repo.createRevWalk()
 
-    batch_size = 1000
-    batch = Array(batch_size)
-    count = 0
+      batch_size = 1000
+      batch = Array(batch_size)
+      count = 0
 
-    walker.walk branch.oid(), (error, commit) ->
-      if (count && count % batch_size == 0) || !commit
-        console.log count
-        models.Commit.create(batch)
+      walker.walk branch.oid(), (error, commit) ->
+        if (count && count % batch_size == 0) || !commit
+          console.log count
+          models.Commit.create(batch)
 
-      return if !commit
+        return if !commit
 
-      author = commit.author()
-      committer = commit.committer()
+        author = commit.author()
+        committer = commit.committer()
 
-      batch[count % batch_size] =
-        _id: commit.sha()
-        author: author.name().toString().trim() if author
-        committer: committer.name().toString().trim() if committer
-        date: commit.date()
-        parents: (parent.sha() for parent in commit.parents())
+        batch[count % batch_size] =
+          _id: commit.sha()
+          author: author.name().toString().trim() if author
+          committer: committer.name().toString().trim() if committer
+          date: commit.date()
+          parents: (parent.sha() for parent in commit.parents())
 
-      count++
+        count++
 
 # Start server
 port = process.env.PORT or 3000
