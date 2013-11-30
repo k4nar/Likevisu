@@ -2,7 +2,9 @@
 express = require("express")
 fs = require("fs")
 path = require("path")
+mongoose = require("mongoose")
 app = express()
+db = mongoose.connect('mongodb://127.0.0.1/commits')
 
 # Express Configuration
 app.configure ->
