@@ -40,18 +40,6 @@ git.Repo.open "/home/yannick/linux/.git", (error, repo) ->
 
       return if !commit
 
-      # author = null
-      # models.Contributor.fromSignature commit.author(), (author) ->
-      #   author.author = true
-      #   if author.isModified()
-      #     author.save()
-
-      # committer = null
-      # models.Contributor.fromSignature commit.committer(), (committer) ->
-      #   committer.committer = true
-      #   if committer.isModified()
-      #     committer.save()
-
       author = commit.author()
       committer = commit.committer()
 

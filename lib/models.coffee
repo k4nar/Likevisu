@@ -7,7 +7,7 @@ commit = new mongoose.Schema
   committer: type: String, index: true
   date: type: Date, index: true
   message: String
-  parents: [type: ObjectId, ref: 'Contributor']
+  parents: [type: String, ref: 'Contributor']
 
 module.exports =
   Commit: mongoose.model('Commit', commit)
