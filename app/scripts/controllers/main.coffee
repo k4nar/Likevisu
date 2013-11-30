@@ -2,3 +2,4 @@
 
 angular.module('likevisuApp')
   .controller 'MainCtrl', ($scope, $http) ->
+    $http

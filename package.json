@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "dependencies": {
     "express": "~3.4.3",
-    "mongoose": "~ 3.8.1"
+    "mongoose": "~ 3.8.1",
+    "nodegit": "~0.1.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
