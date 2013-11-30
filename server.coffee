@@ -1,9 +1,12 @@
 # Module dependencies.
 express = require("express")
-fs = require("fs")
 path = require("path")
-cradle = require("cradle")
+mongoose = require("mongoose")
+git = require("nodegit")
 app = express()
+db = mongoose.connect('mongodb://127.0.0.1/likevisu')
+
+models = require("./lib/models")
 
 # Express Configuration
 app.configure ->
@@ -22,13 +25,33 @@ app.configure "production", ->
   app.use express.favicon(path.join(__dirname, "public/favicon.ico"))
   app.use express.static(path.join(__dirname, "public"))
 
-db = new(cradle.Connection)().database('commits')
+if process.env.PROCESS_COMMITS
+  git.Repo.open "/home/yannick/linux/.git", (error, repo) ->
+    repo.getMaster (error, branch) ->
+      walker = repo.createRevWalk()
 
-fs.readdir './lib/designs', (err, files) ->
-  for file in files
-    file = file.slice 0, -7 # strip the .coffee
-    views = require('./lib/designs/' + file).views
-    db.save('_design/' + file, views)
+      batch_size = 1000
+      batch = Array(batch_size)
+      count = 0
+
+      walker.walk branch.oid(), (error, commit) ->
+        if (count && count % batch_size == 0) || !commit
+          console.log count
+          models.Commit.create(batch)
+
+        return if !commit
+
+        author = commit.author()
+        committer = commit.committer()
+
+        batch[count % batch_size] =
+          _id: commit.sha()
+          author: author.name().toString().trim() if author
+          committer: committer.name().toString().trim() if committer
+          date: commit.date()
+          parents: (parent.sha() for parent in commit.parents())
+
+        count++
 
 # Start server
 port = process.env.PORT or 3000
