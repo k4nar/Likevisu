@@ -4,9 +4,11 @@ path = require("path")
 mongoose = require("mongoose")
 git = require("nodegit")
 app = express()
-db = mongoose.connect('mongodb://127.0.0.1/likevisu')
+
+mongoose.connect('mongodb://127.0.0.1/likevisu')
 
 models = require("./lib/models")
+commits_controller = require("./lib/commits_controller")
 
 # Express Configuration
 app.configure ->
@@ -53,7 +55,9 @@ if process.env.PROCESS_COMMITS
 
         count++
 
-# Start server
+for route, callback of commits_controller
+  app.get('/commits/' + route, callback)
+
 port = process.env.PORT or 3000
 app.listen port, ->
   console.log "Express server listening on port %d in %s mode", port, app.get("env")
