@@ -10,7 +10,7 @@ module.exports = (grunt) ->
   require("load-grunt-tasks") grunt
   require("time-grunt") grunt
 
-  grunt.loadNpmTasks 'grunt-contrib-haml'
+  grunt.loadNpmTasks 'grunt-contrib-jade'
 
   grunt.initConfig
     yeoman:
@@ -60,9 +60,9 @@ module.exports = (grunt) ->
       gruntfile:
         files: ["Gruntfile.js"]
 
-      haml:
-        files: ['<%= yeoman.app %>/{,*//*}*.haml']
-        tasks: ['haml:dist']
+      jade:
+        files: ['<%= yeoman.app %>/{,*//*}*.jade']
+        tasks: ['jade:dist']
 
     autoprefixer:
       options: ["last 1 version"]
@@ -122,17 +122,12 @@ module.exports = (grunt) ->
         options:
           debugInfo: true
 
-    haml:
-      options:
-          doubleQuoteAttributes: true
-          escapeHtml: true
-          unixNewlines: true
-
+    jade:
       dist:
           files: [
               expand: true
               cwd: '<%= yeoman.app %>'
-              src: '{,*/}*.haml'
+              src: '{,*/}*.jade'
               dest: '.tmp'
               ext: '.html'
           ]
@@ -246,8 +241,8 @@ module.exports = (grunt) ->
         src: "{,*/}*.css"
 
     concurrent:
-      server: ["haml:dist", "coffee:dist", "compass:server", "copy:styles"]
-      dist: ["haml:dist", "coffee", "compass:dist", "copy:styles", "imagemin", "svgmin", "htmlmin"]
+      server: ["jade:dist", "coffee:dist", "compass:server", "copy:styles"]
+      dist: ["jade:dist", "coffee", "compass:dist", "copy:styles", "imagemin", "svgmin", "htmlmin"]
 
     cdnify:
       dist:
@@ -274,6 +269,6 @@ module.exports = (grunt) ->
     return grunt.task.run(["build", "express:prod", "open", "express-keepalive"])  if target is "dist"
     grunt.task.run ["clean:server", "concurrent:server", "autoprefixer", "express:dev", "open", "watch"]
 
-  grunt.registerTask "build", ["clean:dist", "haml:dist", "useminPrepare", "concurrent:dist", "autoprefixer", "concat", "ngmin", "copy:dist", "cdnify", "cssmin", "uglify", "rev", "usemin"]
+  grunt.registerTask "build", ["clean:dist", "jade:dist", "useminPrepare", "concurrent:dist", "autoprefixer", "concat", "ngmin", "copy:dist", "cdnify", "cssmin", "uglify", "rev", "usemin"]
   grunt.registerTask "heroku", ["build", "clean:heroku", "copy:heroku"]
   grunt.registerTask "default", ["server"]
