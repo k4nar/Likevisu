@@ -5,7 +5,7 @@ angular.module('likevisuApp')
     restrict: "E"
     replace: false
     scope:
-      data: "=chartData"
+      data: "=data"
 
     link: (scope, element, attrs) ->
       scope.$watch 'data', (data) ->
