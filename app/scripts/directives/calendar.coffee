@@ -26,11 +26,10 @@ angular.module('likevisuApp')
           "H" + (w0 + 1) * cellSize +
           "Z"
 
-      scheme = colorbrewer.Greens[9]
       color = d3.scale
         .quantize()
         .domain([20, 400])
-        .range(d3.range(scheme.length).map((d) -> scheme[d]))
+        .range(colorbrewer.Greens[9])
 
       svg = d3.select(element[0])
         .selectAll("svg")
