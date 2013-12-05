@@ -23,14 +23,53 @@ module.exports =
     top 'committer', (list) ->
       res.json list
 
-  commits_per_day: (req, res) ->
+  per_day: (req, res) ->
     Commit.aggregate()
-      .group(_id: {$add: [{$dayOfYear: "$date"}, {$multiply: [400, {$year: "$date"}]}]}, count: {$sum: 1}, first: {$min: "$date"})
-      .exec (err, result) ->
+      .group(
+        _id:   {$add: [{$dayOfYear: "$date"}, {$multiply: [400, {$year: "$date"}]}]},
+        count: {$sum: 1},
+        first: {$min: "$date"}
+      ).exec (err, result) ->
         dates = {}
 
         for v in result
           date = moment(v.first).format("YYYY-MM-DD")
           dates[date] = v.count
+
+        res.json dates
+
+  evolution: (req, res) ->
+    Commit.aggregate()
+      .group(
+        _id:   {$add: [{$dayOfYear: "$date"}, {$multiply: [400, {$year: "$date"}]}]},
+        count: {$sum: 1},
+        first: {$min: "$date"}
+      )
+      .sort(first: 1)
+      .exec (err, result) ->
+        dates = Array(result.length)
+
+        acc = 0
+        for v, i in result
+          dates[i] = {date: v.first, count: acc + v.count}
+          acc += v.count
+
+        res.json dates
+
+
+  authors_evolution: (req, res) ->
+    Commit.aggregate()
+      .group(
+        _id:   "$author",
+        first: {$min: "$date"}
+      )
+      .sort(first: 1)
+      .exec (err, result) ->
+        dates = Array(result.length)
+
+        acc = 0
+        for v, i in result
+          dates[i] = {date: v.first, count: acc + 1}
+          acc += 1
 
         res.json dates
