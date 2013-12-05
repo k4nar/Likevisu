@@ -26,13 +26,11 @@ module.exports =
   commits_per_day: (req, res) ->
     Commit.aggregate()
       .group(_id: {$add: [{$dayOfYear: "$date"}, {$multiply: [400, {$year: "$date"}]}]}, count: {$sum: 1}, first: {$min: "$date"})
-      #.project(date: "$first", count: 1, _id: 0)
       .exec (err, result) ->
         dates = {}
 
         for v in result
-          d = v.first
-          date = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()
-          dates[moment(v.first).format("YYYY-MM-DD")] = v.count
+          date = moment(v.first).format("YYYY-MM-DD")
+          dates[date] = v.count
 
         res.json dates
