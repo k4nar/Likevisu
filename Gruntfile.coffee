@@ -28,6 +28,10 @@ module.exports = (grunt) ->
         files: ["<%= yeoman.app %>/scripts/{,*/}*.coffee"]
         tasks: ["coffee:dist"]
 
+      flask:
+        files: ["{,*/}*.py"]
+        tasks: ["flask"]
+
       compass:
         files: ["<%= yeoman.app %>/styles/{,*/}*.{scss,sass}"]
         tasks: ["compass:server", "autoprefixer"]
