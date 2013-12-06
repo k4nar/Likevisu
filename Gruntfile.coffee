@@ -19,23 +19,9 @@ module.exports = (grunt) ->
       app: require("./bower.json").appPath or "app"
       dist: "public"
 
-    express:
-      options:
-        port: process.env.PORT or 9000
-        cmd: "coffee"
-
-      dev:
-        options:
-          script: "server.coffee"
-
-      prod:
-        options:
-          script: "server.coffee"
-          node_env: "production"
-
     open:
       server:
-        url: "http://localhost:<%= express.options.port %>"
+        url: "http://localhost:5000/"
 
     watch:
       coffee:
@@ -46,19 +32,12 @@ module.exports = (grunt) ->
         files: ["<%= yeoman.app %>/styles/{,*/}*.{scss,sass}"]
         tasks: ["compass:server", "autoprefixer"]
 
-      express:
-        files: ["<%= yeoman.app %>/{,*//*}*.html", "{.tmp,<%= yeoman.app %>}/styles/{,*//*}*.css", "{.tmp,<%= yeoman.app %>}/scripts/{,*//*}*.js", "<%= yeoman.app %>/images/{,*//*}*.{png,jpg,jpeg,gif,webp,svg}", "server.coffee", "lib/{,*//*}*.{coffee,json}"]
-        tasks: ["express:dev"]
-        options:
-          livereload: true
-          nospawn: true #Without this option specified express won't be reloaded
-
       styles:
         files: ["<%= yeoman.app %>/styles/{,*/}*.css"]
         tasks: ["copy:styles", "autoprefixer"]
 
       gruntfile:
-        files: ["Gruntfile.js"]
+        files: ["Gruntfile.coffee"]
 
       jade:
         files: ['<%= yeoman.app %>/{,*//*}*.jade']
@@ -153,15 +132,6 @@ module.exports = (grunt) ->
       css: ["<%= yeoman.dist %>/styles/{,*/}*.css"]
       options:
         assetsDirs: ["<%= yeoman.dist %>"]
-
-    imagemin:
-      dist:
-        files: [
-          expand: true
-          cwd: "<%= yeoman.app %>/images"
-          src: "{,*/}*.{png,jpg,jpeg}"
-          dest: "<%= yeoman.dist %>/images"
-        ]
 
     svgmin:
       dist:
@@ -262,12 +232,18 @@ module.exports = (grunt) ->
         files:
           "<%= yeoman.dist %>/scripts/scripts.js": ["<%= yeoman.dist %>/scripts/scripts.js"]
 
-  grunt.registerTask "express-keepalive", "Keep grunt running", ->
-    @async()
+  grunt.registerTask "flask", "Run flask server.", ->
+    spawn = require("child_process").spawn
+    grunt.log.writeln "Starting Flask development server."
+
+    # stdio: 'inherit' let us see flask output in grunt
+    process.env.FLASK_YEOMAN_DEBUG = 1
+    PIPE = stdio: "inherit"
+    spawn "python", ["server.py"], PIPE
 
   grunt.registerTask "server", (target) ->
-    return grunt.task.run(["build", "express:prod", "open", "express-keepalive"])  if target is "dist"
-    grunt.task.run ["clean:server", "concurrent:server", "autoprefixer", "express:dev", "open", "watch"]
+    return grunt.task.run(["build", "open"])  if target is "dist"
+    grunt.task.run ["clean:server", "concurrent:server", "autoprefixer", "flask", "open", "watch"]
 
   grunt.registerTask "build", ["clean:dist", "jade:dist", "useminPrepare", "concurrent:dist", "autoprefixer", "concat", "ngmin", "copy:dist", "cdnify", "cssmin", "uglify", "rev", "usemin"]
   grunt.registerTask "heroku", ["build", "clean:heroku", "copy:heroku"]
