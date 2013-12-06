@@ -4,7 +4,7 @@ angular.module('likevisuApp')
   .controller 'MainCtrl', ($scope, $http) ->
     $scope.top_authors = []
     $scope.top_committers = []
-    $scope.commits_per_day = {}
+    $scope.commits_by_date = {}
     $scope.commits_evolution = []
     $scope.authors_evolution = []
 
@@ -12,8 +12,8 @@ angular.module('likevisuApp')
       $scope.top_authors = [res]
 
 
-    # $http.get('/commits/per_day').success (res) ->
-    #   $scope.commits_per_day = res
+    $http.get('/commits/by_date').success (res) ->
+      $scope.commits_by_date = res
 
     # $http.get('/commits/evolution').success (res) ->
     #   $scope.commits_evolution = [{key: "Commit evolution", values: res}]
