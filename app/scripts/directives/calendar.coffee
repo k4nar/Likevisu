@@ -7,7 +7,7 @@ angular.module('likevisuApp')
     link: (scope, element, attrs) ->
       cellSize = 10
 
-      day = (d) -> (((d3.time.format("%w")(d) - 1) % 7) + 7) % 7
+      day = (d) -> (d.getDay() + 6) % 7
       week = d3.time.format("%W")
       format = d3.time.format("%Y-%m-%d")
 
