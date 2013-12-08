@@ -10,16 +10,18 @@ angular.module('likevisuApp')
     link: (scope, element, attrs) ->
       nv.addGraph ->
         chart = nv.models.lineChart()
-          .x((d) -> d3.time.format.iso.parse(d.date))
+          .x((d, i) -> i)
           .y((d) -> d.count)
           .interpolate('step')
           .useInteractiveGuideline(true)
 
         chart.yAxis
           .tickFormat(d3.format("n"))
+          .showMaxMin(false)
 
-        chart
-          .xAxis.tickFormat((d) -> d3.time.format("%b %Y")(new Date(d)))
+          chart.xAxis
+            .tickFormat((d) -> scope.versions[d])
+            .showMaxMin(false)
 
         svg = d3.select(element[0])
           .append('svg')
@@ -28,6 +30,8 @@ angular.module('likevisuApp')
         nv.utils.windowResize chart.update
 
         scope.$watch 'data', (data) ->
+          scope.versions = (d.version for d in data[0].values) if data[0]
+
           svg
             .datum(data)
             .call(chart)
