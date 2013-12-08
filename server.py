@@ -14,6 +14,9 @@ app.register_blueprint(flask_yeoman)
 client = MongoClient()
 db = client.likevisu
 commits = db.commits
+tags = db.tags
+
+repo = git.Repository('/home/yannick/linux')
 
 
 @app.route("/commits/top_authors")
@@ -58,26 +61,31 @@ def diffs():
     return jsonify(query)
 
 def process_commits():
-    repo = git.Repository('/home/yannick/linux')
-
     size = 1000
     batch = [None] * size
     progress = 0
     count = 0
 
+    refs = {tag['target']: tag['_id'] for tag in tags.find()}
+    tag = ''
+
     head = repo[repo.head.target]
-    for commit in repo.walk(head.oid, git.GIT_SORT_NONE):
+    for commit in repo.walk(head.oid, git.GIT_SORT_TOPOLOGICAL | git.GIT_SORT_TIME):
         if progress == size:
             count += progress
             progress = 0
             print(count)
             commits.insert(batch)
 
+        if commit.hex in refs:
+            tag = refs[commit.hex]
+
         obj = {
             '_id': commit.hex,
             'author': commit.author.name.strip(),
             'date': datetime.fromtimestamp(commit.commit_time),
-            'merge': len(commit.parents) > 1
+            'merge': len(commit.parents) > 1,
+            'tag': tag,
         }
 
         if len(commit.parents) == 1:
@@ -93,7 +101,31 @@ def process_commits():
         print(count + progress)
         commits.insert(batch[:progress])
 
+
+def process_tags():
+    bulk = []
+
+    for name in repo.listall_references():
+        if not name.startswith('refs/tags'):
+            continue
+
+        tag = repo.revparse_single(name)
+        commit = tag.get_object()
+
+        if commit.type != git.GIT_OBJ_COMMIT:
+            continue
+
+        bulk.append({
+            '_id': name.split('/')[-1],
+            'target': commit.hex,
+            'date': datetime.fromtimestamp(commit.commit_time)
+        })
+
+    tags.insert(bulk)
+
 if __name__ == "__main__":
     if False:
         process_commits()
+    if False:
+        process_tags()
     app.run(port=5000, debug=True)
