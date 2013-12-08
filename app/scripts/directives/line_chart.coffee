@@ -13,10 +13,11 @@ angular.module('likevisuApp')
           .x((d, i) -> i)
           .y((d) -> d.count)
           .useInteractiveGuideline(true)
-          .interpolate('monotone')
+          .interpolate(attrs.interpolate)
 
         chart.yAxis
           .tickFormat(d3.format("n"))
+          .showMaxMin(false)
 
         chart.xAxis
           .tickFormat((d) -> scope.versions[d])

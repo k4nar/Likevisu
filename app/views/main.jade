@@ -1,7 +1,7 @@
-diff-chart(data='diffs', class='with-transitions')
+line-chart(data='diffs', interpolate='step')
 
-line-chart(data='commits_evolution')
-line-chart(data='authors_evolution')
+line-chart(data='commits_evolution', interpolate='monotone')
+line-chart(data='authors_evolution', interpolate='monotone')
 
 top-chart(data='top_authors_by_lines')
 top-chart(data='top_authors_by_commits')
