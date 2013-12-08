@@ -16,7 +16,7 @@ angular.module('likevisuApp')
       result = query['result']
 
       $scope.diffs = [
-        {key: "Additions", values: (date: v.date, count: v.additions || 0 for v in result), area: true, color: 'red'},
-        {key: "Deletions", values: (date: v.date, count: -v.deletions || 0 for v in result), area: true, color: 'green'},
+        {key: "Additions", values: (date: v.date, count: v.additions for v in result), area: true, color: 'green'},
+        {key: "Deletions", values: (date: v.date, count: -v.deletions for v in result), area: true, color: 'red'},
       ]
       console.log query['result']
