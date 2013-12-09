@@ -241,7 +241,8 @@ module.exports = (grunt) ->
     grunt.log.writeln "Starting Flask development server."
 
     # stdio: 'inherit' let us see flask output in grunt
-    process.env.FLASK_YEOMAN_DEBUG = 1
+    process.env.FLASK_ROOT = 'app'
+    process.env.FLASK_ROOT = '.tmp'
     PIPE = stdio: "inherit"
     spawn "python", ["server.py"], PIPE
 
