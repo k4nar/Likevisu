@@ -24,6 +24,9 @@ module.exports = (grunt) ->
         url: "http://localhost:5000/"
 
     watch:
+      options:
+        livereload: true
+
       coffee:
         files: ["<%= yeoman.app %>/scripts/{,*/}*.coffee"]
         tasks: ["coffee:dist"]
@@ -36,11 +39,8 @@ module.exports = (grunt) ->
         files: ["<%= yeoman.app %>/styles/{,*/}*.css"]
         tasks: ["copy:styles", "autoprefixer"]
 
-      gruntfile:
-        files: ["Gruntfile.coffee"]
-
       jade:
-        files: ['<%= yeoman.app %>/{,*//*}*.jade']
+        files: ['<%= yeoman.app %>/{,*/}*.jade']
         tasks: ['jade:dist']
 
     autoprefixer:
@@ -236,7 +236,7 @@ module.exports = (grunt) ->
     spawn = require("child_process").spawn
     grunt.log.writeln "Starting Flask development server."
 
-    process.env.FLASK_DEBUG = true
+    process.env.FLASK_DEBUG = 'true'
     process.env.FLASK_ROOT = 'app'
     process.env.FLASK_ROOT_ALT = '.tmp'
 

@@ -148,4 +148,5 @@ def evolution():
 if __name__ == "__main__":
     if False:
         process_commits(commits)
-    app.run(port=5000, debug=os.environ.get('FLASK_DEBUG', False))
+    debug = os.environ.get('FLASK_DEBUG', False)
+    app.run(port=5000, debug=debug)
