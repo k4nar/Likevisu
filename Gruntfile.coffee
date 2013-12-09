@@ -240,9 +240,10 @@ module.exports = (grunt) ->
     spawn = require("child_process").spawn
     grunt.log.writeln "Starting Flask development server."
 
-    # stdio: 'inherit' let us see flask output in grunt
     process.env.FLASK_ROOT = 'app'
-    process.env.FLASK_ROOT = '.tmp'
+    process.env.FLASK_ROOT_ALT = '.tmp'
+
+    # stdio: 'inherit' let us see flask output in grunt
     PIPE = stdio: "inherit"
     spawn "python", ["server.py"], PIPE
 

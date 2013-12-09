@@ -13,16 +13,18 @@ db = client.likevisu
 commits = db.commits
 
 
+@app.route('/')
 @app.route('/<path:path>')
 def serve_files(path='index.html'):
     root = os.environ.get('FLASK_ROOT', 'app')
     dest = os.path.join(app.root_path, root, path)
-
     if os.path.isfile(dest):
         return send_file(dest)
 
     root = os.environ.get('FLASK_ROOT_ALT', '.tmp')
     dest = os.path.join(app.root_path, root, path)
+    if os.path.isfile(dest):
+        return send_file(dest)
 
     from werkzeug.exceptions import NotFound
     return NotFound()
