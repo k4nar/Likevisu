@@ -1,16 +1,17 @@
 import os
 
-from flask import Flask, jsonify, send_file
+import pymongo
 
-from pymongo import MongoClient
+from flask import Flask, jsonify, send_file
 
 from processor import process_commits
 
 app = Flask(__name__)
 
-client = MongoClient()
+client = pymongo.MongoClient()
 db = client.likevisu
 commits = db.commits
+tags = db.tags
 
 
 @app.route('/')
@@ -30,56 +31,71 @@ def serve_files(path='index.html'):
     return NotFound()
 
 
-@app.route("/commits/top_authors_by_commits")
-def top_authors_by_commits():
+@app.route("/versions")
+def versions():
+    query = tags.aggregate([
+        {'$match': {'rc': 99}},
+        {'$sort': {'_id': 1}},
+        {'$project': {'id': '$_id', 'name': '$version'}},
+    ])
+
+    return jsonify(query)
+
+
+@app.route("/authors/by_commits/<int:start>/<int:stop>/<int:limit>")
+def top_authors_by_commits(start, stop, limit):
     top = commits.aggregate([
-        {"$match": {'merge': False}},
+        {'$match': {'tag.id': {'$gte': start, '$lte': stop}, 'merge': False}},
         {'$group': {'_id': '$author', 'count': {'$sum': 1}}},
         {'$sort': {'count': -1}},
-        {'$limit': 10},
+        {'$limit': limit},
         {'$project': {'name': '$_id', 'count': 1, '_id': 0}},
     ])
 
     return jsonify(top)
 
-@app.route("/commits/top_authors_by_lines")
-def top_authors_by_lines():
+
+@app.route("/authors/by_lines/<int:start>/<int:stop>/<int:limit>")
+def top_authors_by_lines(start, stop, limit):
     top = commits.aggregate([
-        {"$match": {'merge': False}},
+        {'$match': {'tag.id': {'$gte': start, '$lte': stop}, 'merge': False}},
         {'$group': {'_id': '$author', 'count': {'$sum': '$additions'}}},
         {'$sort': {'count': -1}},
-        {'$limit': 10},
+        {'$limit': limit},
         {'$project': {'name': '$_id', 'count': 1, '_id': 0}},
     ])
 
     return jsonify(top)
 
-@app.route("/commits/top_companies_by_commits")
-def top_companies_by_commits():
+
+@app.route("/companies/by_commits/<int:start>/<int:stop>/<int:limit>")
+def top_companies_by_commits(start, stop, limit):
     top = commits.aggregate([
-        {"$match": {'merge': False}},
+        {'$match': {'tag.id': {'$gte': start, '$lte': stop}, 'merge': False}},
         {'$group': {'_id': '$company', 'count': {'$sum': 1}}},
         {'$sort': {'count': -1}},
-        {'$limit': 10},
+        {'$limit': limit},
         {'$project': {'name': '$_id', 'count': 1, '_id': 0}},
     ])
 
     return jsonify(top)
 
-@app.route("/commits/top_companies_by_lines")
-def top_companies_by_lines():
+
+@app.route("/companies/by_lines/<int:start>/<int:stop>/<int:limit>")
+def top_companies_by_lines(start, stop, limit):
     top = commits.aggregate([
-        {"$match": {'merge': False}},
+        {'$match': {'tag.id': {'$gte': start, '$lte': stop}, 'merge': False}},
         {'$group': {'_id': '$company', 'count': {'$sum': '$additions'}}},
         {'$sort': {'count': -1}},
-        {'$limit': 10},
+        {'$limit': limit},
         {'$project': {'name': '$_id', 'count': 1, '_id': 0}},
     ])
 
     return jsonify(top)
 
-@app.route("/commits/by_date")
-def by_date():
+
+@app.route("/commits/by_date/<int:start>/<int:stop>")
+def by_date(start, stop):
     query = commits.aggregate([
         {'$group': {
             '_id': {'$add': [{'$dayOfYear': '$date'}, {'$multiply': [400, {'$year': '$date'}]}]},
@@ -88,13 +104,14 @@ def by_date():
         }},
     ])
 
-    dates = {v['first'].strftime("%Y-%m-%d"): v['count'] for v in query['result']}
+    dates = {v['first'].strftime('%Y-%m-%d'): v['count'] for v in query['result']}
     return jsonify(dates)
 
-@app.route("/commits/diffs")
-def diffs():
+
+@app.route("/commits/diffs/<int:start>/<int:stop>")
+def diffs(start, stop):
     query = commits.aggregate([
-        {'$match': {'merge': False}},
+        {'$match': {'tag.id': {'$gte': start, '$lte': stop}, 'merge': False}},
         {'$group': {
             '_id': '$tag.version',
             'additions': {'$sum': '$additions'},
@@ -108,10 +125,11 @@ def diffs():
 
     return jsonify(query)
 
-@app.route("/commits/evolution")
-def authors_evolution():
+
+@app.route("/commits/evolution/<int:start>/<int:stop>")
+def authors_evolution(start, stop):
     query = commits.aggregate([
-        {'$match': {'merge': False}},
+        {'$match': {'tag.id': {'$gte': start, '$lte': stop}, 'merge': False}},
         {'$group': {
             '_id': '$tag.version',
             'count': {'$sum': 1},
@@ -124,10 +142,11 @@ def authors_evolution():
 
     return jsonify(query)
 
-@app.route("/commits/authors_evolution")
-def evolution():
+
+@app.route("/authors/evolution/<int:start>/<int:stop>")
+def evolution(start, stop):
     query = commits.aggregate([
-        {'$match': {'merge': False}},
+        {'$match': {'tag.id': {'$gte': start, '$lte': stop}, 'merge': False}},
         {'$group': {
             '_id': '$tag.version',
             'authors': {'$addToSet': '$author'},
