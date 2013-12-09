@@ -37,6 +37,30 @@ def top_authors_by_lines():
 
     return jsonify(top)
 
+@app.route("/commits/top_companies_by_commits")
+def top_companies_by_commits():
+    top = commits.aggregate([
+        {"$match": {'merge': False}},
+        {'$group': {'_id': '$company', 'count': {'$sum': 1}}},
+        {'$sort': {'count': -1}},
+        {'$limit': 10},
+        {'$project': {'name': '$_id', 'count': 1, '_id': 0}},
+    ])
+
+    return jsonify(top)
+
+@app.route("/commits/top_companies_by_lines")
+def top_companies_by_lines():
+    top = commits.aggregate([
+        {"$match": {'merge': False}},
+        {'$group': {'_id': '$company', 'count': {'$sum': '$additions'}}},
+        {'$sort': {'count': -1}},
+        {'$limit': 10},
+        {'$project': {'name': '$_id', 'count': 1, '_id': 0}},
+    ])
+
+    return jsonify(top)
+
 @app.route("/commits/by_date")
 def by_date():
     query = commits.aggregate([

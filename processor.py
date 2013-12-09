@@ -2,6 +2,9 @@ from datetime import datetime
 
 import pygit2 as git
 
+from companies import domains
+
+
 repo = git.Repository('/home/yannick/linux')
 
 
@@ -56,10 +59,15 @@ def process_commits(commits):
         obj = {
             '_id': commit.hex,
             'author': commit.author.name.strip(),
+            'email': commit.author.email,
             'date': datetime.fromtimestamp(commit.commit_time),
             'merge': len(commit.parents) > 1,
             'tag': tag,
         }
+
+        domain = obj['email'].split('@')[-1]
+        if domain in domains:
+            obj['company'] = domains[domain]
 
         if len(commit.parents) == 1:
             diffs = commit.parents[0].tree.diff_to_tree(commit.tree, context_lines=0)
