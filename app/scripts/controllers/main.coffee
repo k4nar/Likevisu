@@ -2,14 +2,6 @@
 
 angular.module('likevisuApp')
   .controller 'MainCtrl', ($scope, $http) ->
-    $scope.top_authors_by_commits = []
-    $scope.top_authors_by_lines = []
-    $scope.top_companies_by_commits = []
-    $scope.top_companies_by_lines = []
-    $scope.commits_by_date = {}
-    $scope.diffs = []
-    $scope.commits_evolution = []
-    $scope.authors_evolution = []
 
     $http.get('/commits/top_authors_by_commits').success (query) ->
       $scope.top_authors_by_commits = [{key: "Top Authors by Commits", values: query['result']}]

@@ -28,6 +28,7 @@ angular.module('likevisuApp')
         nv.utils.windowResize chart.update
 
         scope.$watch 'data', (data) ->
-          svg
-            .datum(data)
-            .call(chart)
+          if data
+            svg
+              .datum(data)
+              .call(chart)

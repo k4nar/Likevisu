@@ -79,7 +79,8 @@ angular.module('likevisuApp')
 
 
       scope.$watch 'data', (data) ->
-        rect.filter((d) -> d of data)
-          .style("fill", (d) -> color(data[d]))
-          .select("title")
-          .text((d) -> d + ": " + data[d])
+        if data
+          rect.filter((d) -> d of data)
+            .style("fill", (d) -> color(data[d]))
+            .select("title")
+            .text((d) -> d + ": " + data[d])
