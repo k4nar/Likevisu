@@ -1,12 +1,10 @@
 from flask import Flask, g, jsonify
-from flask_yeoman import flask_yeoman
 
 from pymongo import MongoClient
 
 from processor import process_commits
 
 app = Flask(__name__)
-app.register_blueprint(flask_yeoman)
 
 client = MongoClient()
 db = client.likevisu
