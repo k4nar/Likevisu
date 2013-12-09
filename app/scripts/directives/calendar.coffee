@@ -4,6 +4,7 @@ angular.module('likevisuApp')
     replace: false
     scope:
       data: "=data"
+      boundaries: "=boundaries"
     link: (scope, element, attrs) ->
       cellSize = 10
 
@@ -31,55 +32,59 @@ angular.module('likevisuApp')
         .domain([20, 400])
         .range(colorbrewer.Greens[9])
 
-      svg = d3.select(element[0])
-        .selectAll("svg")
-        .data(d3.range(2005, 2014))
-        .enter()
-        .append("svg")
-        .attr("width", 551)
-        .attr("height", 72)
-        .append("g")
-        .attr("transform", "translate(20, 1)")
+      scope.$watch 'boundaries', (boundaries) ->
+        return if not boundaries
 
-      svg.append("text")
-        .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
-        .style("text-anchor", "middle")
-        .text((d) -> d)
+        start = boundaries[0]
+        stop = boundaries[1]
 
-      rect = svg.selectAll(".day")
-        .data((d) ->
-          d3.time.days new Date(d, 0, 1), new Date(d + 1, 0, 1)
-        )
-        .enter()
-        .append("rect")
-        .attr("class", "day")
-        .attr("width", cellSize)
-        .attr("height", cellSize)
-        .attr("x", (d) -> week(d) * cellSize)
-        .attr("y", (d) -> day(d) * cellSize)
-        .style("fill", "#fff")
-        .style("stroke", "#eee")
-        .datum(format)
+        svg = d3.select(element[0])
+          .selectAll("svg")
+          .data(d3.range(start, stop))
+          .enter()
+          .append("svg")
+          .attr("width", 551)
+          .attr("height", 72)
+          .append("g")
+          .attr("transform", "translate(20, 1)")
 
-      rect.append("title").text (d) -> d
+        svg.append("text")
+          .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
+          .style("text-anchor", "middle")
+          .text((d) -> d)
 
-      scope.rect = rect
+        rect = svg.selectAll(".day")
+          .data((d) ->
+            d3.time.days new Date(d, 0, 1), new Date(d + 1, 0, 1)
+          )
+          .enter()
+          .append("rect")
+          .attr("class", "day")
+          .attr("width", cellSize)
+          .attr("height", cellSize)
+          .attr("x", (d) -> week(d) * cellSize)
+          .attr("y", (d) -> day(d) * cellSize)
+          .style("fill", "#fff")
+          .style("stroke", "#eee")
+          .datum(format)
 
-      svg.selectAll(".month")
-        .data((d) ->
-          d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1))
-        )
-        .enter()
-        .append("path")
-        .attr("class", "month")
-        .style("fill", "none")
-        .style("stroke", "#ccc")
-        .style("stroke-width", "1px")
-        .attr("d", monthPath)
+        rect.append("title").text (d) -> d
 
+        svg.selectAll(".month")
+          .data((d) ->
+            d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1))
+          )
+          .enter()
+          .append("path")
+          .attr("class", "month")
+          .style("fill", "none")
+          .style("stroke", "#ccc")
+          .style("stroke-width", "1px")
+          .attr("d", monthPath)
 
-      scope.$watch 'data', (data) ->
-        if data
+        scope.$watch 'data', (data) ->
+          return if not data
+
           rect.filter((d) -> d of data)
             .style("fill", (d) -> color(data[d]))
             .select("title")

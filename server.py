@@ -97,15 +97,23 @@ def top_companies_by_lines(start, stop, limit):
 @app.route("/commits/by_date/<int:start>/<int:stop>")
 def by_date(start, stop):
     query = commits.aggregate([
+        {'$match': {'tag.id': {'$gte': start, '$lte': stop}}},
         {'$group': {
-            '_id': {'$add': [{'$dayOfYear': '$date'}, {'$multiply': [400, {'$year': '$date'}]}]},
+            '_id': {'$add': [
+                {'$dayOfYear': '$date'},
+                {'$multiply': [400, {'$year': '$date'}]}
+            ]},
             'count': {'$sum': 1},
             'first': {'$min': '$date'},
         }},
+        {'$sort': {'first': 1}}
     ])
 
-    dates = {v['first'].strftime('%Y-%m-%d'): v['count'] for v in query['result']}
-    return jsonify(dates)
+    return jsonify({
+        'dates': {str(v['first'].date()): v['count'] for v in query['result']},
+        'start': query['result'][0]['first'].year,
+        'stop': query['result'][-1]['first'].year,
+    })
 
 
 @app.route("/commits/diffs/<int:start>/<int:stop>")

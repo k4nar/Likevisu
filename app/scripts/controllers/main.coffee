@@ -31,8 +31,9 @@ angular.module('likevisuApp')
       $http.get(req('/companies/by_lines', 10)).success (query) ->
         $scope.top_companies_by_lines = [{key: "Top Companies by lines added", values: query['result']}]
 
-      $http.get(req('/commits/by_date')).success (res) ->
-        $scope.commits_by_date = res
+      $http.get(req('/commits/by_date')).success (query) ->
+        $scope.commits_by_date_boundaries = [query['start'], query['stop']]
+        $scope.commits_by_date = query['dates']
 
       $http.get(req('/commits/diffs')).success (query) ->
         result = query['result']
