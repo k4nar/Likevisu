@@ -40,7 +40,7 @@ angular.module('likevisuApp')
 
         svg = d3.select(element[0])
           .selectAll("svg")
-          .data(d3.range(start, stop))
+          .data(d3.range(start, stop + 1))
           .enter()
           .append("svg")
           .attr("width", 551)
