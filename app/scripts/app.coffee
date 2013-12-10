@@ -1,12 +1,6 @@
 'use strict'
 
-angular.module('likevisuApp', [
-  'ngCookies',
-  'ngResource',
-  'ngSanitize',
-  'ngRoute',
-  'nvd3ChartDirectives'
-])
+angular.module('likevisuApp', ['ngRoute'])
   .config ($routeProvider) ->
     $routeProvider
       .when '/',
