@@ -15,9 +15,6 @@ angular.module('likevisuApp')
       $scope.start = query['result'][10].name
       $scope.stop = query['result'][20].name
 
-      update_graphs()
-
-
     update_graphs = ->
       req = (route, args...) ->
         route += '/' + $scope.versions[$scope.start]
