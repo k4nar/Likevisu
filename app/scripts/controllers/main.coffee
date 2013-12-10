@@ -2,22 +2,29 @@
 
 angular.module('likevisuApp')
   .controller 'MainCtrl', ($scope, $http) ->
-    $scope.versions = []
-    $scope.first = null
-    $scope.last = null
+    $scope.versions = {}
+    $scope.start = null
+    $scope.stop = null
 
-    req = (route, args...) ->
-      route += '/' + $scope.first.id
-      route += '/' + $scope.last.id
-      for arg in args
-        route += '/' + arg
-      route
+    $scope.$watchCollection '[start, stop]', (values) ->
+      return if not ($scope.start and $scope.stop)
+      update_graphs()
 
     $http.get('/versions').success (query) ->
-      $scope.versions = query['result']
-      $scope.first = $scope.versions[10]
-      $scope.last = $scope.versions[20]
-      console.log $scope.first, $scope.last
+      $scope.versions[version['name']] = version['id'] for version in query['result']
+      $scope.start = query['result'][10].name
+      $scope.stop = query['result'][20].name
+
+      update_graphs()
+
+
+    update_graphs = ->
+      req = (route, args...) ->
+        route += '/' + $scope.versions[$scope.start]
+        route += '/' + $scope.versions[$scope.stop]
+        for arg in args
+          route += '/' + arg
+        route
 
       $http.get(req('/authors/by_commits', 10)).success (query) ->
         $scope.top_authors_by_commits = [{key: "Top Authors by Commits", values: query['result']}]
