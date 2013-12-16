@@ -2,11 +2,13 @@ import os
 
 import pymongo
 
-from flask import Flask, jsonify, send_file
+from flask import Flask, jsonify, send_file, abort
+from flask.ext.cache import Cache
 
 from processor import process_commits
 
 app = Flask(__name__)
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 client = pymongo.MongoClient()
 db = client.likevisu
@@ -27,8 +29,7 @@ def serve_files(path='index.html'):
     if os.path.isfile(dest):
         return send_file(dest)
 
-    from werkzeug.exceptions import NotFound
-    return NotFound()
+    abort(404)
 
 
 @app.route("/versions")
@@ -43,6 +44,7 @@ def versions():
 
 
 @app.route("/authors/by_commits/<int:start>/<int:stop>/<int:limit>")
+@cache.cached()
 def top_authors_by_commits(start, stop, limit):
     top = commits.aggregate([
         {'$match': {'tag.id': {'$gte': start, '$lte': stop}, 'merge': False}},
@@ -56,6 +58,7 @@ def top_authors_by_commits(start, stop, limit):
 
 
 @app.route("/authors/by_lines/<int:start>/<int:stop>/<int:limit>")
+@cache.cached()
 def top_authors_by_lines(start, stop, limit):
     top = commits.aggregate([
         {'$match': {'tag.id': {'$gte': start, '$lte': stop}, 'merge': False}},
@@ -69,6 +72,7 @@ def top_authors_by_lines(start, stop, limit):
 
 
 @app.route("/companies/by_commits/<int:start>/<int:stop>/<int:limit>")
+@cache.cached()
 def top_companies_by_commits(start, stop, limit):
     top = commits.aggregate([
         {'$match': {'tag.id': {'$gte': start, '$lte': stop}, 'merge': False}},
@@ -82,6 +86,7 @@ def top_companies_by_commits(start, stop, limit):
 
 
 @app.route("/companies/by_lines/<int:start>/<int:stop>/<int:limit>")
+@cache.cached()
 def top_companies_by_lines(start, stop, limit):
     top = commits.aggregate([
         {'$match': {'tag.id': {'$gte': start, '$lte': stop}, 'merge': False}},
@@ -95,6 +100,7 @@ def top_companies_by_lines(start, stop, limit):
 
 
 @app.route("/commits/by_date/<int:start>/<int:stop>")
+@cache.cached()
 def by_date(start, stop):
     query = commits.aggregate([
         {'$match': {'tag.id': {'$gte': start, '$lte': stop}}},
@@ -117,6 +123,7 @@ def by_date(start, stop):
 
 
 @app.route("/commits/diffs/<int:start>/<int:stop>")
+@cache.cached()
 def diffs(start, stop):
     query = commits.aggregate([
         {'$match': {'tag.id': {'$gte': start, '$lte': stop}, 'merge': False}},
@@ -135,6 +142,7 @@ def diffs(start, stop):
 
 
 @app.route("/commits/evolution/<int:start>/<int:stop>")
+@cache.cached()
 def authors_evolution(start, stop):
     query = commits.aggregate([
         {'$match': {'tag.id': {'$gte': start, '$lte': stop}, 'merge': False}},
@@ -152,6 +160,7 @@ def authors_evolution(start, stop):
 
 
 @app.route("/authors/evolution/<int:start>/<int:stop>")
+@cache.cached()
 def evolution(start, stop):
     query = commits.aggregate([
         {'$match': {'tag.id': {'$gte': start, '$lte': stop}, 'merge': False}},
