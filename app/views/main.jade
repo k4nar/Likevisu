@@ -14,26 +14,35 @@
         .pure-u-1-3
           .pure-g-r
             .pure-u-1
+              h2 Top companies by lines :
+              top-chart(data='top_companies_by_lines')
+              hr
+            //- .pure-u-1
+            //-   top-chart(data='top_companies_by_commits')
+            .pure-u-1
+              h2 Top authors by lines :
               top-chart(data='top_authors_by_lines')
             //- .pure-u-1
             //-   top-chart(data='top_authors_by_commits')
-            .pure-u-1
-              top-chart(data='top_companies_by_lines')
-            //- .pure-u-1
-            //-   top-chart(data='top_companies_by_commits')
 
         .pure-u-1-3
           .pure-g-r
             .pure-u-1
+              h2 Lines added and deleted by release :
               line-chart(data='diffs', interpolate='step')
+              hr
             .pure-u-1
+              h2 Commits number by release :
               line-chart(data='commits_evolution', interpolate='monotone')
+              hr
             .pure-u-1
+              h2 Authors number by release :
               line-chart(data='authors_evolution', interpolate='monotone')
 
         .pure-u-1-3
           .pure-g-r
             .pure-u-1
+              h2 Commits activity by day :
               calendar.calendar(data='commits_by_date', boundaries='commits_by_date_boundaries')
 
 

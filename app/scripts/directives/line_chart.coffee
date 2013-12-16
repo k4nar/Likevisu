@@ -13,6 +13,7 @@ angular.module('likevisuApp')
           .x((d, i) -> i)
           .y((d) -> d.count)
           .useInteractiveGuideline(true)
+          .showLegend(false)
           .interpolate(attrs.interpolate)
 
         chart.yAxis

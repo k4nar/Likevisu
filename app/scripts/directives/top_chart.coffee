@@ -10,11 +10,12 @@ angular.module('likevisuApp')
     link: (scope, element, attrs) ->
       nv.addGraph ->
         chart = nv.models.multiBarHorizontalChart()
-          .x((d) -> d.name)
+          .x((d) -> d.name || "Unknown")
           .y((d) -> d.count)
           .margin(top: 30, right: 20, bottom: 50, left: 175)
           .showValues(true)
           .tooltips(false)
+          .showLegend(false)
           .showControls(false)
           .valueFormat(d3.format("n"))
 
