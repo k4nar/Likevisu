@@ -34,6 +34,10 @@ body {
   }
 }
 
+svg.loading {
+  opacity: 0.5;
+}
+
 .calendar {
   shape-rendering: crispEdges;
 }

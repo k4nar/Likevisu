@@ -36,3 +36,5 @@ angular.module('likevisuApp')
             svg
               .datum(data)
               .call(chart)
+              .classed('loading', false)
+

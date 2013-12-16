@@ -64,7 +64,7 @@ angular.module('likevisuApp')
           .attr("height", cellSize)
           .attr("x", (d) -> week(d) * cellSize)
           .attr("y", (d) -> day(d) * cellSize)
-          .style("fill", "#fff")
+          .style("fill", "none")
           .style("stroke", "#eee")
           .datum(format)
 
@@ -84,6 +84,10 @@ angular.module('likevisuApp')
 
         scope.$watch 'data', (data) ->
           return if not data
+
+          d3.select(element[0])
+            .selectAll("svg")
+            .classed('loading', false)
 
           rect.filter((d) -> d of data)
             .style("fill", (d) -> color(data[d]))

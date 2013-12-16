@@ -6,6 +6,7 @@ angular.module('likevisuApp')
     $scope.versions = []
     $scope.start = null
     $scope.stop = null
+    $scope.loading = false
 
     $scope.$watchCollection '[start, stop]', (values) ->
       return if not ($scope.start and $scope.stop)
@@ -26,6 +27,9 @@ angular.module('likevisuApp')
         for arg in args
           route += '/' + arg
         route
+
+      for element in document.querySelectorAll('svg')
+        element.classList.add('loading')
 
       $http.get(req('/authors/by_commits', 10)).success (query) ->
         $scope.top_authors_by_commits = [{key: "Top Authors by Commits", values: query['result']}]

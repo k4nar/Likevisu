@@ -1,6 +1,6 @@
 #layout
   .pure-g-r
-    header#header.pure-u
+    header#header.pure-u-1
       h1
         div.pure-form
           label Evolution of the development of the Linux Kernel between versions
@@ -8,24 +8,32 @@
           label and
             select(ng-model="stop", ng-options="v for v in versions | limitTo:stop_bound")
 
-    #charts.pure-u
+    #charts.pure-u-1
 
       .pure-g-r
         .pure-u-1-3
-          line-chart(data='diffs', interpolate='step')
-        .pure-u-1-3
-          line-chart(data='commits_evolution', interpolate='monotone')
-        .pure-u-1-3
-          line-chart(data='authors_evolution', interpolate='monotone')
+          .pure-g-r
+            .pure-u-1
+              top-chart(data='top_authors_by_lines')
+            //- .pure-u-1
+            //-   top-chart(data='top_authors_by_commits')
+            .pure-u-1
+              top-chart(data='top_companies_by_lines')
+            //- .pure-u-1
+            //-   top-chart(data='top_companies_by_commits')
 
         .pure-u-1-3
-          top-chart(data='top_authors_by_lines')
-        .pure-u-1-3
-          top-chart(data='top_authors_by_commits')
-        .pure-u-1-3
-          top-chart(data='top_companies_by_lines')
-        .pure-u-1-3
-          top-chart(data='top_companies_by_commits')
+          .pure-g-r
+            .pure-u-1
+              line-chart(data='diffs', interpolate='step')
+            .pure-u-1
+              line-chart(data='commits_evolution', interpolate='monotone')
+            .pure-u-1
+              line-chart(data='authors_evolution', interpolate='monotone')
 
         .pure-u-1-3
-          calendar.calendar(data='commits_by_date', boundaries='commits_by_date_boundaries')
+          .pure-g-r
+            .pure-u-1
+              calendar.calendar(data='commits_by_date', boundaries='commits_by_date_boundaries')
+
+
