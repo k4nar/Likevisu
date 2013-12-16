@@ -14,16 +14,14 @@
         .pure-u-1-3
           .pure-g-r
             .pure-u-1
-              h2 Top companies by lines :
-              top-chart(data='top_companies_by_lines')
+              h2.pure-form Top companies by
+                select(ng-model="top_by", ng-init="options = ['lines', 'commits']", ng-options="e for e in options")
+              top-chart(data='top_companies')
               hr
-            //- .pure-u-1
-            //-   top-chart(data='top_companies_by_commits')
             .pure-u-1
-              h2 Top authors by lines :
-              top-chart(data='top_authors_by_lines')
-            //- .pure-u-1
-            //-   top-chart(data='top_authors_by_commits')
+              h2.pure-form Top authors by
+                select(ng-model="top_by", ng-init="options = ['lines', 'commits']", ng-options="e for e in options")
+              top-chart(data='top_authors')
 
         .pure-u-1-3
           .pure-g-r

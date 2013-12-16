@@ -34,28 +34,40 @@ body {
   }
 }
 
-h2 {
-  margin: 0;
-}
+#charts {
+  h2 {
+    margin: 0;
 
-hr {
-  border: 0;
-  border-top: 1px solid #ddd;
-  width: 80%;
-  margin: auto;
-  margin-bottom: 20px;
-}
+    select {
+      font-size: 0.8em;
+      padding: 0.1em;
+      margin: 0 0.5em;
+      background: rgba(255, 255, 255, 0.5);
+      border: none;
+      border-bottom: 2px solid #aaa;
+      box-shadow: none;
+    }
+  }
 
-svg.loading {
-  opacity: 0.5;
-}
-
-.calendar {
-  shape-rendering: crispEdges;
-
-  svg {
-    width: auto;
+  hr {
+    border: 0;
+    border-top: 1px solid #ddd;
+    width: 80%;
     margin: auto;
-    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  svg.loading {
+    opacity: 0.5;
+  }
+
+  .calendar {
+    shape-rendering: crispEdges;
+
+    svg {
+      width: auto;
+      margin: auto;
+      margin-top: 20px;
+    }
   }
 }
