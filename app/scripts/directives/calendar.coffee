@@ -35,25 +35,28 @@ angular.module('likevisuApp')
       scope.$watch 'boundaries', (boundaries) ->
         return if not boundaries
 
+        element.children().remove()
+
         start = boundaries[0]
         stop = boundaries[1]
 
         svg = d3.select(element[0])
-          .selectAll("svg")
+          .append("svg")
+          .attr("height", (stop - start + 1) * 80)
+          .attr("width", 570)
+
+        g = svg.selectAll("g")
           .data(d3.range(start, stop + 1))
           .enter()
-          .append("svg")
-          .attr("width", 551)
-          .attr("height", 72)
           .append("g")
-          .attr("transform", "translate(20, 1)")
+          .attr("transform", (d, i) -> "translate(20, " + i * 80 + ")")
 
-        svg.append("text")
+        g.append("text")
           .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
           .style("text-anchor", "middle")
           .text((d) -> d)
 
-        rect = svg.selectAll(".day")
+        rect = g.selectAll(".day")
           .data((d) ->
             d3.time.days new Date(d, 0, 1), new Date(d + 1, 0, 1)
           )
@@ -70,7 +73,7 @@ angular.module('likevisuApp')
 
         rect.append("title").text (d) -> d
 
-        svg.selectAll(".month")
+        g.selectAll(".month")
           .data((d) ->
             d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1))
           )
@@ -85,11 +88,10 @@ angular.module('likevisuApp')
         scope.$watch 'data', (data) ->
           return if not data
 
-          d3.select(element[0])
-            .selectAll("svg")
+          svg
             .classed('loading', false)
 
           rect.filter((d) -> d of data)
             .style("fill", (d) -> color(data[d]))
             .select("title")
-            .text((d) -> d + ": " + data[d])
+            .text((d) -> d + ": " + data[d] + " commits")
