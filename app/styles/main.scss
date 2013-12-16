@@ -5,24 +5,35 @@
     padding: 0.2em 0;
 }
 
-/* Space out content a bit */
 body {
-    padding-top: 20px;
-    padding-bottom: 20px;
-    //shape-rendering: crispEdges;
+  background: url(../images/noise.png);
 }
 
-// $menu-width: 200px;
+#header {
+  width: 100%;
+  background: #191818;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
 
-// #layout {
-//   padding-left: $menu-width;
-// }
+  margin-bottom: 70px;
 
-// #menu {
-//   margin-left: -$menu-width;
-//   width: $menu-width;
-//   position: fixed;
-//   top: 0;
-//   bottom: 0;
-//   background: #ccc;
-// }
+  h1 {
+    text-align: center;
+    text-shadow: rgba(255, 255, 255, 0.2) 1px 1px 1px;
+    color: #eee;
+
+    select {
+      font-size: 0.8em;
+      padding: 0.1em;
+      margin: 0 0.5em;
+      color: #1f8dd6;
+      background: #333;
+      border: none;
+      border-bottom: 2px solid #555;
+      box-shadow: none;
+    }
+  }
+}
+
+.calendar {
+  shape-rendering: crispEdges;
+}

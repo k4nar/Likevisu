@@ -9,13 +9,15 @@ angular.module('likevisuApp')
 
     $scope.$watchCollection '[start, stop]', (values) ->
       return if not ($scope.start and $scope.stop)
+      $scope.start_bound = $scope.versions.indexOf($scope.stop)
+      $scope.stop_bound = -($scope.versions.length - $scope.versions.indexOf($scope.start) - 1)
       update_graphs()
 
     $http.get('/versions').success (query) ->
       versions_map[version['name']] = version['id'] for version in query['result']
       $scope.versions = (version['name'] for version in query['result'])
-      $scope.start = query['result'][10].name
-      $scope.stop = query['result'][20].name
+      $scope.start = query['result'][0].name
+      $scope.stop = query['result'][query['result'].length - 1].name
 
     update_graphs = ->
       req = (route, args...) ->
