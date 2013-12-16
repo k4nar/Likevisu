@@ -1,14 +1,23 @@
-input(type="text", ng-model="start")
-input(type="text", ng-model="stop")
+#layout
+  .pure-g-r
+    #charts.pure-u
 
-line-chart(data='diffs', interpolate='step')
+      .pure-g-r
+        .pure-u-1-3
+          line-chart(data='diffs', interpolate='step')
+        .pure-u-1-3
+          line-chart(data='commits_evolution', interpolate='monotone')
+        .pure-u-1-3
+          line-chart(data='authors_evolution', interpolate='monotone')
 
-line-chart(data='commits_evolution', interpolate='monotone')
-line-chart(data='authors_evolution', interpolate='monotone')
+        .pure-u-1-3
+          top-chart(data='top_authors_by_lines')
+        .pure-u-1-3
+          top-chart(data='top_authors_by_commits')
+        .pure-u-1-3
+          top-chart(data='top_companies_by_lines')
+        .pure-u-1-3
+          top-chart(data='top_companies_by_commits')
 
-top-chart(data='top_authors_by_lines')
-top-chart(data='top_authors_by_commits')
-top-chart(data='top_companies_by_lines')
-top-chart(data='top_companies_by_commits')
-
-calendar(data='commits_by_date', boundaries='commits_by_date_boundaries')
+        .pure-u-1-3
+          calendar(data='commits_by_date', boundaries='commits_by_date_boundaries')

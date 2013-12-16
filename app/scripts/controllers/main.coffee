@@ -2,7 +2,8 @@
 
 angular.module('likevisuApp')
   .controller 'MainCtrl', ($scope, $http) ->
-    $scope.versions = {}
+    versions_map = {}
+    $scope.versions = []
     $scope.start = null
     $scope.stop = null
 
@@ -11,14 +12,15 @@ angular.module('likevisuApp')
       update_graphs()
 
     $http.get('/versions').success (query) ->
-      $scope.versions[version['name']] = version['id'] for version in query['result']
+      versions_map[version['name']] = version['id'] for version in query['result']
+      $scope.versions = (version['name'] for version in query['result'])
       $scope.start = query['result'][10].name
       $scope.stop = query['result'][20].name
 
     update_graphs = ->
       req = (route, args...) ->
-        route += '/' + $scope.versions[$scope.start]
-        route += '/' + $scope.versions[$scope.stop]
+        route += '/' + versions_map[$scope.start]
+        route += '/' + versions_map[$scope.stop]
         for arg in args
           route += '/' + arg
         route
