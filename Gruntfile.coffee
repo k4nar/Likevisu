@@ -212,7 +212,7 @@ module.exports = (grunt) ->
 
     concurrent:
       server: ["jade:dist", "coffee:dist", "compass:server", "copy:styles"]
-      dist: ["jade:dist", "coffee", "compass:dist", "copy:styles", "imagemin", "svgmin", "htmlmin"]
+      dist: ["jade:dist", "coffee", "compass:dist", "copy:styles", "htmlmin"]
 
     cdnify:
       dist:
@@ -244,7 +244,7 @@ module.exports = (grunt) ->
     PIPE = stdio: "inherit"
     spawn "python", ["server.py"], PIPE
 
-  grunt.registerTask "build", ["clean:dist", "jade:dist", "useminPrepare", "concurrent:dist", "autoprefixer", "concat", "ngmin", "copy:dist", "cdnify", "cssmin", "uglify", "rev", "usemin"]
+  grunt.registerTask "build", ["clean:dist", "jade:dist", "useminPrepare", "concurrent:dist", "autoprefixer", "ngmin", "copy:dist", "cdnify", "uglify", "rev", "usemin"]
   grunt.registerTask "heroku", ["build", "clean:heroku", "copy:heroku"]
   grunt.registerTask "server", ["clean:server", "concurrent:server", "autoprefixer", "flask", "open", "watch"]
   grunt.registerTask "default", ["server"]
