@@ -1,4 +1,5 @@
 import os
+import sys
 
 import pymongo
 
@@ -182,7 +183,7 @@ def evolution(start, stop):
 
 
 if __name__ == "__main__":
-    if False:
+    if len(sys.argv) > 1 and "--process" in sys.argv:
         process_commits(commits)
     debug = os.environ.get('FLASK_DEBUG', False)
     app.run(port=5000, debug=debug)
